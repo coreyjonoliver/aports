@@ -1,0 +1,52 @@
+# Contributor: Corey Oliver <coreyjonoliver@gmail.com>
+# Maintainer: Corey Oliver <coreyjonoliver@gmail.com>
+pkgname=node-argon2
+_pkgname=argon2
+pkgver=0.14.0
+pkgrel=0
+pkgdesc="Port of the lib sodium encryption library to Node.js"
+url="https://github.com/ranisalt/node-argon2"
+arch="all"
+license="MIT"
+depends="nodejs libargon2=20161029-r0"
+makedepends="argon2-dev=20161029-r0 python2"
+source="$pkgname-$pkgver.tar.gz::https://github.com/ranisalt/$pkgname/archive/v$pkgver.tar.gz
+fix-gyp-binding.patch
+fix-includes.patch
+"
+builddir="$srcdir/$pkgname-$pkgver"
+
+prepare() {
+    local i
+	cd "$builddir"
+	for i in $source; do
+		case $i in
+		*.patch) msg $i; patch -p1 -i "$srcdir"/$i || return 1;;
+		esac
+	done
+}
+
+build() {
+    cd "$builddir"
+    npm install && npm test && npm prune --production
+}
+
+package() {
+    moduledir="$pkgdir/usr/lib/node_modules/$_pkgname"
+
+    mkdir -p "$moduledir"
+    cp "$builddir/index.js" "$moduledir/index.js"
+    cp "$builddir/package.json" "$moduledir/package.json"
+    cp -r "$builddir/node_modules" "$moduledir/node_modules"
+    cp -r "$builddir/build" "$moduledir/build"
+}
+
+md5sums="e56a64cb625a92bab8703bec4a3e708d  node-argon2-0.14.0.tar.gz
+36f51b80bd916cfafd57466a4c4eea35  fix-gyp-binding.patch
+eaa552bf80b90162d77493a721995025  fix-includes.patch"
+sha256sums="01636626c0f0fd886626ca2e43d7841623e3f33cdb862460f619a339f4ca3291  node-argon2-0.14.0.tar.gz
+5712ea4bde451bcfd228fe0b53d1a61396f0da270ae5cc568aa2a8e2a2f6e0d6  fix-gyp-binding.patch
+4d0ed31fc7524a3db12d68da670533de58a3ffd84faed71c37659d87af3888b4  fix-includes.patch"
+sha512sums="503344138a3a6b8b28d258f2a8a56b501311984a7e6c1c6887cac550b5a41b9a5164cf372b7fc3889af1acf07290346cf220ad269aa1dd3e5226fd360861e6f4  node-argon2-0.14.0.tar.gz
+f73f1e06ac9aa4df124eec57b0c20cd2f46b29ee0062caf2ea95187e35fbbd356ceed59c4544bf4df7aabc47eaffc1a297edd7d0360c80f74c3e6f350fb3d2fd  fix-gyp-binding.patch
+7bf64f2d194f1128178cad508c09e03b8e09b48aa27555d1dbfa4262e911a70a326faac156cd085f4722f99a9f3c30edda42f856da6a816fa9df72ab651d6775  fix-includes.patch"

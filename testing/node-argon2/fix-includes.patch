@@ -1,0 +1,11 @@
+--- src/src/argon2_node.cpp
++++ src/src/argon2_node.cpp
+@@ -5,7 +5,7 @@
+ #include <string>
+ #include <tuple>
+ 
+-#include "../argon2/include/argon2.h"
++#include "argon2.h"
+ #include "argon2_node.h"
+ 
+ namespace NodeArgon2 {
